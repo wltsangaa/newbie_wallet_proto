@@ -1,0 +1,3837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Wallet UI Prototype - Enhanced</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 40px;
+            padding: 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+            display: none;
+            flex-direction: column;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .header {
+            height: 60px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .back-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 16px;
+            background: #f8f9fa;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .help-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 16px;
+            background: #e3f2fd;
+            border: 2px solid #1976d2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #1976d2;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .help-btn:hover {
+            background: #1976d2;
+            color: white;
+            transform: scale(1.05);
+            transition: all 0.2s;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            padding-bottom: 100px; /* Extra space for buttons */
+            overflow-y: auto;
+            max-height: calc(100vh - 104px); /* Account for status bar and header */
+        }
+
+        .welcome-hero {
+            text-align: center;
+            padding: 20px 20px 40px 20px;
+        }
+
+        .hero-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+            margin: 0 auto 24px;
+        }
+
+        .hero-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+        }
+
+        .hero-subtitle {
+            font-size: 16px;
+            color: #6c757d;
+            line-height: 1.5;
+            margin-bottom: 32px;
+        }
+
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+
+        .progress-step {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            margin: 0 8px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #9ca3af;
+        }
+
+        .progress-step.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .progress-step.completed {
+            background: #667eea;
+            color: white;
+        }
+
+        .onboarding-checklist {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .checklist-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .checklist-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .progress-badge {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+
+        .checklist-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 12px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .checklist-icon.completed {
+            background: #28a745;
+            color: white;
+        }
+
+        .checklist-icon.current {
+            background: #667eea;
+            color: white;
+        }
+
+        .checklist-icon.pending {
+            background: #e9ecef;
+            color: #6c757d;
+        }
+
+        .tooltip-trigger {
+            position: relative;
+            cursor: help;
+            margin-left: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #e3f2fd;
+            border: 1px solid #1976d2;
+            color: #1976d2;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .tooltip-trigger:hover {
+            background: #1976d2;
+            color: white;
+            transform: scale(1.1);
+            transition: all 0.2s;
+        }
+
+        .tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+
+        .tooltip-trigger:hover .tooltip {
+            opacity: 1;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 320px;
+            margin: 20px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+        }
+
+        .modal-content {
+            color: #6c757d;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        .modal-close {
+            width: 100%;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .wallet-balance {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 24px;
+            color: white;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .balance-label {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+
+        .balance-amount {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .buy-crypto-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            padding: 12px 20px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .buy-crypto-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .currency-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .currency-btn {
+            background: #f8f9fa;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .currency-btn.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .currency-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 16px;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .btc { background: #f7931a; }
+        .eth { background: #627eea; }
+        .usdc { background: #2775ca; }
+
+        .amount-section {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+        }
+
+        .amount-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .amount-btn {
+            background: #f8f9fa;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .amount-btn.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+            color: #667eea;
+        }
+
+        .custom-amount {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .custom-amount:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .fee-breakdown {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .fee-breakdown-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .fee-breakdown-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .market-indicator {
+            background: #e8f5e8;
+            color: #28a745;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .fee-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .fee-row:last-child {
+            margin-bottom: 0;
+            font-weight: 600;
+            padding-top: 8px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .fee-label {
+            display: flex;
+            align-items: center;
+        }
+
+        .payment-methods {
+            margin-bottom: 24px;
+        }
+
+        .payment-method {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .payment-method.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .payment-method.recommended::after {
+            content: "Recommended";
+            position: absolute;
+            top: -8px;
+            right: 16px;
+            background: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .payment-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .payment-info h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .payment-info p {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .comparison-table {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .comparison-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 8px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e9ecef;
+            font-weight: 600;
+            font-size: 12px;
+            color: #6c757d;
+            text-transform: uppercase;
+        }
+
+        .comparison-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 8px;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+            align-items: center;
+        }
+
+        .comparison-row:last-child {
+            border-bottom: none;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+        }
+
+        .primary-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 16px;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .secondary-btn {
+            width: 100%;
+            background: #f8f9fa;
+            color: #667eea;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 12px;
+        }
+
+        .processing-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 24px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .processing-steps {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 24px 0;
+            text-align: left;
+        }
+
+        .processing-step {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .step-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 10px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .step-icon.completed {
+            background: #28a745;
+            color: white;
+        }
+
+        .step-icon.current {
+            background: #667eea;
+            color: white;
+        }
+
+        .step-icon.pending {
+            background: #e9ecef;
+            color: #6c757d;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #28a745;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+            margin-bottom: 24px;
+        }
+
+        .success-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #1a1a1a;
+        }
+
+        .transaction-details {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 24px 0;
+            text-align: left;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .detail-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 1000;
+            background: rgba(0,0,0,0.8);
+            padding: 8px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .nav-btn {
+            background: transparent;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 10px;
+            min-width: 28px;
+            white-space: nowrap;
+        }
+
+        .nav-btn.active {
+            background: #667eea;
+        }
+
+        .celebration {
+            animation: celebrate 0.6s ease-out;
+        }
+
+        @keyframes celebrate {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .security-tip {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .security-tip-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .security-icon {
+            color: #856404;
+            margin-right: 8px;
+        }
+
+        .recovery-phrase {
+            background: #f8f9fa;
+            border: 2px dashed #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+            text-align: center;
+        }
+
+        .phrase-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .phrase-word {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            font-family: monospace;
+            color: white;
+            font-weight: 600;
+        }
+
+        .phrase-word .number {
+            font-size: 10px;
+            color: rgba(255,255,255,0.7);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .phrase-revealed {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .phrase-hidden {
+            animation: fadeOut 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-10px); }
+        }
+
+        #reveal-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+            transition: all 0.2s;
+        }
+
+        .badges-container {
+            display: flex;
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        .badge {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #8b6914;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .badge-icon {
+            margin-right: 4px;
+        }
+
+        /* AI Assistant Styles - Inside Phone Frame */
+        .ai-assistant {
+            position: absolute;
+            bottom: 120px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1500;
+            border: 3px solid white;
+        }
+
+        .ai-assistant:hover {
+            transform: scale(1.15);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        .ai-assistant:active {
+            transform: scale(1.05);
+        }
+
+        .ai-assistant.pulsing {
+            animation: pulse 2s infinite, float 3s ease-in-out infinite;
+        }
+
+        .ai-assistant.pulsing:hover {
+            animation: pulseHover 1s infinite, float 3s ease-in-out infinite;
+        }
+
+        .ai-assistant::after {
+            content: "💬";
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 20px;
+            height: 20px;
+            background: #28a745;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s ease;
+        }
+
+        .ai-assistant.has-message::after {
+            opacity: 1;
+            transform: scale(1);
+            animation: bounce 0.6s ease;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% { transform: scale(1); }
+            40%, 43% { transform: scale(1.2); }
+        }
+
+        /* AI Tooltip */
+        .ai-tooltip {
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            margin-bottom: 8px;
+        }
+
+        .ai-tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            right: 16px;
+            border: 5px solid transparent;
+            border-top-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .ai-assistant:hover .ai-tooltip,
+        .ai-tooltip.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes pulse {
+            0% { 
+                box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+                transform: scale(1.05);
+            }
+            100% { 
+                box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pulseHover {
+            0% { 
+                box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
+                transform: scale(1.15);
+            }
+            50% { 
+                box-shadow: 0 10px 35px rgba(102, 126, 234, 0.7);
+                transform: scale(1.2);
+            }
+            100% { 
+                box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
+                transform: scale(1.15);
+            }
+        }
+
+        .ai-chat {
+            position: absolute;
+            bottom: 120px;
+            right: 20px;
+            width: 300px;
+            height: 380px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            display: none;
+            flex-direction: column;
+            z-index: 1600;
+            border: 1px solid #e9ecef;
+            transform: translateY(10px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .ai-chat.active {
+            display: flex;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .ai-chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 16px 16px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ai-chat-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            max-height: 280px;
+        }
+
+        .ai-message {
+            background: #f0f4ff;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .ai-input-area {
+            padding: 16px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            gap: 8px;
+        }
+
+        .ai-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .ai-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .ai-send {
+            width: 36px;
+            height: 36px;
+            background: #667eea;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Enhanced Processing Styles */
+        .progress-ring {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+        }
+
+        .progress-ring-circle {
+            fill: none;
+            stroke: #e9ecef;
+            stroke-width: 4;
+        }
+
+        .progress-ring-progress {
+            fill: none;
+            stroke: #667eea;
+            stroke-width: 4;
+            stroke-linecap: round;
+            transform-origin: 50% 50%;
+            transform: rotate(-90deg);
+            transition: stroke-dashoffset 0.3s;
+        }
+
+        .time-estimate {
+            background: #e3f2fd;
+            border-radius: 12px;
+            padding: 12px;
+            margin: 16px 0;
+            text-align: center;
+        }
+
+        .anxiety-reducer {
+            background: #e8f5e8;
+            border: 1px solid #c3e6cb;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+        }
+
+        .confidence-booster {
+            background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 2px 10px rgba(40, 167, 69, 0.2); }
+            to { box-shadow: 0 4px 20px rgba(40, 167, 69, 0.4); }
+        }
+
+        /* Error Recovery Styles */
+        .error-recovery {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+
+        .error-title {
+            color: #856404;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .error-solutions {
+            color: #856404;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .error-solutions li {
+            margin-bottom: 8px;
+        }
+
+        .retry-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+
+        /* Progressive Disclosure */
+        .advanced-options {
+            margin-top: 16px;
+        }
+
+        .advanced-toggle {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 14px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .advanced-content {
+            display: none;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 0 0 8px 8px;
+            border: 1px solid #e9ecef;
+            border-top: none;
+        }
+
+        .advanced-content.expanded {
+            display: block;
+        }
+
+        /* Mobile optimizations */
+        @media (max-height: 800px) {
+            .content {
+                padding: 16px;
+                padding-bottom: 80px;
+            }
+            
+            .welcome-hero {
+                padding: 16px 16px 32px 16px;
+            }
+            
+            .hero-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 30px;
+                margin: 0 auto 16px;
+            }
+            
+            .processing-screen {
+                padding: 20px 16px;
+            }
+
+            .ai-assistant {
+                width: 48px;
+                height: 48px;
+                font-size: 18px;
+                bottom: 100px;
+                right: 16px;
+            }
+
+            .ai-chat {
+                width: 280px;
+                height: 320px;
+                right: 16px;
+                bottom: 100px;
+            }
+        }
+
+        /* Annotation System Styles */
+        .annotation-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 3000;
+            transition: all 0.3s ease;
+        }
+
+        .annotation-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .annotation-toggle.active {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .annotation-overlay {
+            position: absolute;
+            pointer-events: none;
+            z-index: 2500;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .annotation-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .annotation-highlight {
+            border: 3px solid #ff6b6b;
+            border-radius: 8px;
+            background: rgba(255, 107, 107, 0.1);
+            animation: pulse-highlight 2s infinite;
+            position: relative;
+        }
+
+        @keyframes pulse-highlight {
+            0%, 100% { 
+                border-color: #ff6b6b;
+                box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.4);
+            }
+            50% { 
+                border-color: #ff8e53;
+                box-shadow: 0 0 0 10px rgba(255, 107, 107, 0);
+            }
+        }
+
+        .annotation-popup {
+            position: absolute;
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            max-width: 300px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            border: 2px solid #ff6b6b;
+            z-index: 2600;
+        }
+
+        .annotation-popup::before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border: 12px solid transparent;
+        }
+
+        .annotation-popup.top::before {
+            bottom: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-top-color: #ff6b6b;
+        }
+
+        .annotation-popup.bottom::before {
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-bottom-color: #ff6b6b;
+        }
+
+        .annotation-popup.left::before {
+            right: -24px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-left-color: #ff6b6b;
+        }
+
+        .annotation-popup.right::before {
+            left: -24px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-right-color: #ff6b6b;
+        }
+
+        .annotation-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .annotation-content {
+            font-size: 14px;
+            color: #4a5568;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .annotation-controls {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .annotation-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .annotation-btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-1px);
+        }
+
+        .annotation-btn.pause {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .annotation-btn.close {
+            background: #dc3545;
+        }
+
+        .annotation-progress {
+            height: 4px;
+            background: #e9ecef;
+            border-radius: 2px;
+            margin: 12px 0 8px 0;
+            overflow: hidden;
+        }
+
+        .annotation-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .annotation-step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .annotation-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .annotation-dot.active {
+            background: #667eea;
+            transform: scale(1.3);
+        }
+
+        .annotation-floating {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 16px 20px;
+            border-radius: 12px;
+            max-width: 400px;
+            z-index: 2700;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .annotation-floating.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .annotation-counter {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 12px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #667eea;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            z-index: 2800;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .annotation-counter.show {
+            opacity: 1;
+        }
+
+        /* Animated explanation styles */
+        .explanation-sequence {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2400;
+        }
+
+        .explanation-step {
+            position: absolute;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.5s ease;
+        }
+
+        .explanation-step.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .pulse-ring {
+            position: absolute;
+            border: 3px solid #667eea;
+            border-radius: 50%;
+            animation: pulse-ring 2s infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        .annotation-paused {
+            animation-play-state: paused !important;
+        }
+
+        /* Mobile optimizations */
+        @media (max-height: 800px) {
+            .annotation-popup {
+                max-width: 250px;
+                padding: 16px;
+            }
+            
+            .annotation-floating {
+                max-width: 300px;
+                padding: 12px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Annotation System Controls -->
+    <button class="annotation-toggle" id="annotation-toggle" onclick="toggleAnnotations()">
+                        📚 Show UX Design Rationale
+    </button>
+    
+    <!-- Annotation Counter -->
+    <div class="annotation-counter" id="annotation-counter">
+        Component 1 of 5
+    </div>
+    
+    <!-- Floating Explanation -->
+    <div class="annotation-floating" id="annotation-floating">
+        <div id="floating-content"></div>
+    </div>
+
+    <div class="phone-frame">
+        <!-- AI Assistant - Inside Phone Frame -->
+        <div class="ai-assistant pulsing" onclick="toggleAIChat()" id="ai-assistant">
+            🤖
+            <div class="ai-tooltip" id="ai-tooltip">
+                Tap me for help! 👋
+            </div>
+        </div>
+
+        <!-- AI Chat Interface - Inside Phone Frame -->
+        <div class="ai-chat" id="ai-chat">
+            <div class="ai-chat-header">
+                <div>
+                    <div style="font-weight: 600;">Crypto Assistant</div>
+                    <div style="font-size: 12px; opacity: 0.9;">I'm here to help! 😊</div>
+                </div>
+                <button style="background: none; border: none; color: white; font-size: 18px; cursor: pointer;" onclick="toggleAIChat()">×</button>
+            </div>
+            <div class="ai-chat-messages" id="ai-messages">
+                <div class="ai-message">
+                    👋 Hi! I'm your crypto guide. I can help with:
+                    <br>• Explaining any step
+                    <br>• Answering questions
+                    <br>• Reducing anxiety
+                    <br>• Making transactions easier
+                    <br><br>Just ask me anything like "How do I buy crypto?" or "Is this safe?"
+                </div>
+            </div>
+            <div class="ai-input-area">
+                <input type="text" class="ai-input" placeholder="Ask me anything..." id="ai-input" onkeypress="handleAIInput(event)">
+                <button class="ai-send" onclick="sendAIMessage()">→</button>
+            </div>
+        </div>
+
+        <!-- Screen 1: Welcome -->
+        <div class="screen active" id="screen1">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>🔋 100%</span>
+            </div>
+            <div class="content" style="padding: 16px 20px; display: flex; flex-direction: column; justify-content: space-between; height: calc(100% - 44px); overflow: hidden;">
+                <div>
+                    <div class="welcome-hero" style="padding: 16px 0 24px 0;">
+                        <div class="hero-icon" style="width: 64px; height: 64px; margin: 0 auto 12px;">🚀</div>
+                        <h1 class="hero-title" style="font-size: 22px; margin-bottom: 6px;">Welcome to CryptoWallet</h1>
+                        <p class="hero-subtitle" style="font-size: 14px; margin: 0;">Your secure gateway to cryptocurrency</p>
+                    </div>
+
+                    <div class="progress-indicator" style="margin-bottom: 20px;">
+                        <div class="progress-step active">1</div>
+                        <div class="progress-step">2</div>
+                        <div class="progress-step">3</div>
+                        <div class="progress-step">4</div>
+                    </div>
+
+                    <div style="background: #f0f9ff; border-radius: 10px; padding: 12px; margin-bottom: 16px;">
+                        <div style="font-weight: 600; color: #0369a1; margin-bottom: 8px; text-align: center; font-size: 14px;">✨ What makes us special?</div>
+                        <div style="color: #0369a1; font-size: 12px; line-height: 1.4; text-align: center;">
+                            🎯 Beginner-friendly • 🔒 Bank-level security<br>
+                            💰 Transparent pricing • 🤖 AI assistance
+                        </div>
+                    </div>
+
+                    <!-- User Confidence Stats -->
+                    <div style="background: #ecfdf5; border-radius: 10px; padding: 12px; margin-bottom: 16px; text-align: center;">
+                        <div style="font-weight: 600; color: #065f46; margin-bottom: 2px; font-size: 14px;">🌟 Trusted by 10M+ users</div>
+                        <div style="font-size: 12px; color: #064e3b;">95% success rate • 3 min setup</div>
+                    </div>
+
+                    <!-- New User Reassurance -->
+                    <div style="background: #fefce8; border-radius: 10px; padding: 12px; margin-bottom: 20px; text-align: center;">
+                        <div style="font-weight: 600; color: #92400e; margin-bottom: 4px; font-size: 14px;">🤔 New to crypto?</div>
+                        <div style="font-size: 12px; color: #92400e;">No technical knowledge needed. Start with any amount.</div>
+                    </div>
+                </div>
+
+                <div style="padding-bottom: 20px;">
+                    <button class="primary-btn" onclick="nextScreen()" style="margin-bottom: 12px;">Get Started</button>
+                    <button class="secondary-btn" onclick="openModal('welcome-help')">Learn More</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 2: Wallet Creation -->
+        <div class="screen" id="screen2">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>🔋 100%</span>
+            </div>
+            <div class="header">
+                <button class="back-btn" onclick="prevScreen()">←</button>
+                <div class="header-title">Your Wallet</div>
+                <button class="help-btn" onclick="openModal('wallet-help')">?</button>
+            </div>
+            <div class="content">
+                <div class="progress-indicator">
+                    <div class="progress-step completed">1</div>
+                    <div class="progress-step active">2</div>
+                    <div class="progress-step">3</div>
+                    <div class="progress-step">4</div>
+                </div>
+
+                <div style="text-align: center; margin-bottom: 32px;">
+                    <div style="width: 80px; height: 80px; background: #667eea; border-radius: 40px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: white; margin: 0 auto 16px;">🔒</div>
+                    <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 12px;">Secure Crypto Wallet</h2>
+                    <p style="color: #6c757d; line-height: 1.5;">Your personal vault for digital currencies</p>
+                </div>
+
+                <div style="background: #f8f9fa; border-radius: 16px; padding: 20px; margin-bottom: 24px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 16px;">
+                        <div style="width: 48px; height: 48px; background: #667eea; border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: white; margin-right: 16px;">🔑</div>
+                        <div>
+                            <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 4px; color: #1a1a1a;">Traditional Wallet</h3>
+                            <p style="font-size: 14px; color: #6c757d;">Full control • Complete ownership • Your keys, your crypto</p>
+                        </div>
+                    </div>
+
+                    <div style="background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                        <div style="font-weight: 600; color: #1a1a1a; margin-bottom: 12px;">✨ What you get:</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 14px; color: #6c757d;">
+                            <div>🔐 Full ownership</div>
+                            <div>🌍 Global access</div>
+                            <div>🚀 DeFi ready</div>
+                            <div>💰 No limits</div>
+                            <div>🔒 Bank-level security</div>
+                            <div>📱 Mobile & desktop</div>
+                        </div>
+                    </div>
+
+                    <div style="background: #e3f2fd; border-radius: 12px; padding: 12px; text-align: center;">
+                        <div style="font-size: 14px; color: #1976d2;">
+                            <strong>🛡️ Security Note:</strong> You'll get a 12-word recovery phrase to keep your wallet safe
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;">
+                    <button class="primary-btn" onclick="createNewWallet()">
+                        <div style="margin-bottom: 4px;">🆕</div>
+                        Create New Wallet
+                    </button>
+                    <button class="secondary-btn" onclick="importExistingWallet()">
+                        <div style="margin-bottom: 4px;">📥</div>
+                        Import Existing
+                    </button>
+                </div>
+
+                <div style="background: #fefce8; border-radius: 12px; padding: 16px; text-align: center;">
+                    <div style="font-weight: 600; color: #92400e; margin-bottom: 8px;">🤔 New to crypto?</div>
+                    <div style="font-size: 14px; color: #92400e;">Choose "Create New Wallet" to start fresh with a secure setup</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 3: Security Setup -->
+        <div class="screen" id="screen3">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>🔋 100%</span>
+            </div>
+            <div class="header">
+                <button class="back-btn" onclick="prevScreen()">←</button>
+                <div class="header-title">Secure Your Wallet</div>
+                <button class="help-btn" onclick="openModal('security-help')">?</button>
+            </div>
+            <div class="content">
+                <div class="progress-indicator">
+                    <div class="progress-step completed">1</div>
+                    <div class="progress-step completed">2</div>
+                    <div class="progress-step active">3</div>
+                    <div class="progress-step">4</div>
+                </div>
+
+                <div class="security-tip">
+                    <div class="security-tip-header">
+                        <span class="security-icon">🔐</span>
+                        <strong>Keep this safe!</strong>
+                    </div>
+                    <p style="font-size: 14px; color: #856404;">Your recovery phrase is your master key. Store safely, never share.</p>
+                </div>
+
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 8px;">Secret Recovery Phrase</h2>
+                    <p style="color: #6c757d; font-size: 14px;">Write down these 12 words in order</p>
+                </div>
+
+                <!-- Phrase Reveal Section -->
+                <div style="background: #1a1a1a; border-radius: 16px; padding: 24px; margin-bottom: 24px; position: relative;">
+                    <!-- Hidden Phrase (shown when revealed) -->
+                    <div id="phrase-content" style="display: none;">
+                    <div class="phrase-grid">
+                        <div class="phrase-word"><span class="number">1.</span> ocean</div>
+                        <div class="phrase-word"><span class="number">2.</span> hidden</div>
+                        <div class="phrase-word"><span class="number">3.</span> escape</div>
+                        <div class="phrase-word"><span class="number">4.</span> brave</div>
+                        <div class="phrase-word"><span class="number">5.</span> sunset</div>
+                        <div class="phrase-word"><span class="number">6.</span> tunnel</div>
+                        <div class="phrase-word"><span class="number">7.</span> galaxy</div>
+                        <div class="phrase-word"><span class="number">8.</span> puzzle</div>
+                        <div class="phrase-word"><span class="number">9.</span> gentle</div>
+                        <div class="phrase-word"><span class="number">10.</span> forest</div>
+                        <div class="phrase-word"><span class="number">11.</span> wisdom</div>
+                        <div class="phrase-word"><span class="number">12.</span> castle</div>
+                    </div>
+                    </div>
+
+                    <!-- Reveal Overlay (shown by default) -->
+                    <div id="phrase-overlay" style="text-align: center; color: white;">
+                        <div style="font-size: 48px; margin-bottom: 16px;">👁️‍🗨️</div>
+                        <div style="font-size: 18px; font-weight: 600; margin-bottom: 12px;">Tap to reveal your Secret Recovery Phrase</div>
+                        <div style="font-size: 14px; opacity: 0.8; margin-bottom: 24px;">Make sure no one is watching your screen</div>
+                        <button 
+                            style="background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.3); border-radius: 12px; padding: 12px 24px; color: white; font-weight: 600; cursor: pointer; font-size: 16px;"
+                            onclick="revealPhrase()"
+                            id="reveal-btn">
+                            👁️ View
+                        </button>
+                    </div>
+                </div>
+
+                <div style="background: #fefce8; border-radius: 12px; padding: 16px; margin-bottom: 24px;">
+                    <h4 style="color: #92400e; margin-bottom: 8px;">🛡️ Security Tips</h4>
+                    <div style="color: #92400e; font-size: 14px; line-height: 1.5;">
+                        • Write on paper only, never screenshot<br>
+                        • Store in a safe location<br>
+                        • Make multiple copies<br>
+                        • Never share with anyone
+                    </div>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" class="checkbox" id="backup-confirm">
+                    <label for="backup-confirm">I have safely written down my recovery phrase</label>
+                </div>
+
+                <button class="primary-btn" onclick="confirmBackup()" id="confirm-backup-btn" disabled>Continue</button>
+            </div>
+        </div>
+
+        <!-- Screen 4: Onboarding Dashboard -->
+        <div class="screen" id="screen4">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>🔋 100%</span>
+            </div>
+            <div class="header">
+                <div></div>
+                <div class="header-title">Getting Started</div>
+                <button class="help-btn" onclick="openModal('dashboard-help')">?</button>
+            </div>
+            <div class="content">
+                <div class="progress-indicator">
+                    <div class="progress-step completed">1</div>
+                    <div class="progress-step completed">2</div>
+                    <div class="progress-step completed">3</div>
+                    <div class="progress-step active">4</div>
+                </div>
+
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <div style="width: 80px; height: 80px; background: #10b981; border-radius: 40px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: white; margin: 0 auto 16px;">🎉</div>
+                    <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">Wallet Ready!</h2>
+                    <p style="color: #6c757d;">Complete your setup by buying crypto</p>
+                </div>
+
+                <div class="onboarding-checklist">
+                    <div class="checklist-header">
+                        <div class="checklist-title">Your Progress</div>
+                        <div class="progress-badge">3/6</div>
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <div class="checklist-icon completed">✓</div>
+                        <div>
+                            <div style="font-weight: 600;">Create wallet</div>
+                            <div style="font-size: 14px; color: #6c757d;">Your secure wallet is ready!</div>
+                        </div>
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <div class="checklist-icon completed">✓</div>
+                        <div>
+                            <div style="font-weight: 600;">Choose wallet type</div>
+                            <div style="font-size: 14px; color: #6c757d;">Smart wallet selected</div>
+                        </div>
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <div class="checklist-icon completed">✓</div>
+                        <div>
+                            <div style="font-weight: 600;">Backup recovery phrase</div>
+                            <div style="font-size: 14px; color: #6c757d;">Your funds are secure</div>
+                        </div>
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <div class="checklist-icon current">4</div>
+                        <div>
+                            <div style="font-weight: 600;">Buy your first crypto</div>
+                            <div style="font-size: 14px; color: #6c757d;">Start with any amount you're comfortable with</div>
+                        </div>
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <div class="checklist-icon pending">5</div>
+                        <div>
+                            <div style="font-weight: 600;">Explore features</div>
+                            <div style="font-size: 14px; color: #6c757d;">Discover what you can do</div>
+                        </div>
+                    </div>
+                    
+                    <div class="checklist-item">
+                        <div class="checklist-icon pending">6</div>
+                        <div>
+                            <div style="font-weight: 600;">Become a crypto pro</div>
+                            <div style="font-size: 14px; color: #6c757d;">Learn advanced features</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="badges-container">
+                    <div class="badge">
+                        <span class="badge-icon">🏆</span>
+                        <span>Wallet Creator</span>
+                    </div>
+                    <div class="badge">
+                        <span class="badge-icon">🔒</span>
+                        <span>Security Expert</span>
+                    </div>
+                </div>
+
+                <button class="primary-btn" onclick="goToScreen(6)">Buy Crypto</button>
+                <button class="secondary-btn" onclick="goToScreen(5)">Skip to Wallet</button>
+            </div>
+        </div>
+
+        <!-- Screen 5: Enhanced Wallet Dashboard -->
+        <div class="screen" id="screen5">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>🔋 100%</span>
+            </div>
+            <div class="header">
+                <div></div>
+                <div class="header-title">Wallet
+                    <span class="tooltip-trigger">?
+                        <div class="tooltip">Your crypto home base</div>
+                    </span>
+                </div>
+                <div>⚙️</div>
+            </div>
+            <div class="content">
+                <div class="wallet-balance">
+                    <div class="balance-label">Total Balance
+                        <span class="tooltip-trigger">?
+                            <div class="tooltip">Combined value of all your crypto</div>
+                        </span>
+                    </div>
+                    <div class="balance-amount">$2,847.32</div>
+                    <button class="buy-crypto-btn" onclick="nextScreen()">
+                        Buy Crypto
+                    </button>
+                </div>
+                
+                <div class="section-title">Your Assets
+                    <span class="tooltip-trigger">?
+                        <div class="tooltip">Cryptocurrencies you own</div>
+                    </span>
+                </div>
+                <div style="background: #fff; border-radius: 12px; padding: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <div style="display: flex; align-items: center;">
+                            <div class="currency-icon btc" style="margin-right: 12px;">₿</div>
+                            <div>
+                                <div style="font-weight: 600;">Bitcoin</div>
+                                <div style="font-size: 14px; color: #6c757d;">0.0234 BTC</div>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-weight: 600;">$2,457.00</div>
+                            <div style="font-size: 14px; color: #28a745;">+10%</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <div style="display: flex; align-items: center;">
+                            <div class="currency-icon eth" style="margin-right: 12px;">Ξ</div>
+                            <div>
+                                <div style="font-weight: 600;">Ethereum</div>
+                                <div style="font-size: 14px; color: #6c757d;">0.15 ETH</div>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-weight: 600;">$525.00</div>
+                            <div style="font-size: 14px; color: #28a745;">+5.2%</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 32px; height: 32px; border-radius: 16px; margin-right: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; background: linear-gradient(135deg, #9945FF 0%, #14F195 100%);">S</div>
+                            <div>
+                                <div style="font-weight: 600;">Solana</div>
+                                <div style="font-size: 14px; color: #6c757d;">1.25 SOL</div>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-weight: 600;">$287.50</div>
+                            <div style="font-size: 14px; color: #dc3545;">-2.1%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 6: Enhanced Buy Crypto - Amount Selection -->
+        <div class="screen" id="screen6">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>🔋 100%</span>
+            </div>
+            <div class="header">
+                <button class="back-btn" onclick="prevScreen()">←</button>
+                <div class="header-title">Buy Crypto</div>
+                <button class="help-btn" onclick="openModal('buy-help')">?</button>
+            </div>
+            <div class="content">
+                <div style="background: #f0f9ff; border-radius: 12px; padding: 16px; margin-bottom: 24px; text-align: center;">
+                    <div style="font-weight: 600; color: #0369a1; margin-bottom: 4px;">Buy Your First Crypto</div>
+                    <div style="font-size: 14px; color: #0c4a6e;">Start with any amount you're comfortable with</div>
+                </div>
+
+                <div class="section-title">Select Currency
+                    <span class="tooltip-trigger">?
+                        <div class="tooltip">Choose which crypto to buy</div>
+                    </span>
+                </div>
+                <div class="currency-grid">
+                    <div class="currency-btn selected" onclick="selectCurrency('btc')">
+                        <div class="currency-icon btc">₿</div>
+                        <div style="font-weight: 600;">BTC</div>
+                        <div style="font-size: 10px; color: #6c757d;">Most popular</div>
+                    </div>
+                    <div class="currency-btn" onclick="selectCurrency('eth')">
+                        <div class="currency-icon eth">Ξ</div>
+                        <div style="font-weight: 600;">ETH</div>
+                        <div style="font-size: 10px; color: #6c757d;">Smart contracts</div>
+                    </div>
+                    <div class="currency-btn" onclick="selectCurrency('usdc')">
+                        <div class="currency-icon usdc">$</div>
+                        <div style="font-weight: 600;">USDC</div>
+                        <div style="font-size: 10px; color: #6c757d;">Stable value</div>
+                    </div>
+                </div>
+
+                <div class="amount-section">
+                    <div class="section-title">Amount (USD)
+                        <span class="tooltip-trigger">?
+                            <div class="tooltip">How much you want to spend</div>
+                        </span>
+                    </div>
+                    <div class="amount-buttons">
+                        <button class="amount-btn" onclick="selectAmount(100)">$100</button>
+                        <button class="amount-btn selected" onclick="selectAmount(250)">$250</button>
+                        <button class="amount-btn" onclick="selectAmount(500)">$500</button>
+                    </div>
+                    <input type="text" class="custom-amount" placeholder="$250" value="$250" onchange="updateAmount(this.value)">
+                </div>
+
+                <div class="fee-breakdown">
+                    <div class="fee-breakdown-header">
+                        <div class="fee-breakdown-title">Price Breakdown
+                            <span class="tooltip-trigger">?
+                                <div class="tooltip">Complete cost breakdown</div>
+                            </span>
+                        </div>
+                        <div class="market-indicator">Near market rate</div>
+                    </div>
+                    <div class="fee-row">
+                        <div class="fee-label">Bitcoin amount
+                            <span class="tooltip-trigger">?
+                                <div class="tooltip">How much crypto you'll receive</div>
+                            </span>
+                        </div>
+                        <span>~0.0047 BTC</span>
+                    </div>
+                    <div class="fee-row">
+                        <div class="fee-label">Market price
+                            <span class="tooltip-trigger">?
+                                <div class="tooltip">Current market value</div>
+                            </span>
+                        </div>
+                        <span>$52,000/BTC</span>
+                    </div>
+                    <div class="fee-row">
+                        <div class="fee-label">Service fee (1%)
+                            <span class="tooltip-trigger">?
+                                <div class="tooltip">Our service charge</div>
+                            </span>
+                        </div>
+                        <span>$2.50</span>
+                    </div>
+                    <div class="fee-row">
+                        <div class="fee-label">Network fee
+                            <span class="tooltip-trigger">?
+                                <div class="tooltip">Blockchain transaction cost</div>
+                            </span>
+                        </div>
+                        <span>$3.25</span>
+                    </div>
+                    <div class="fee-row">
+                        <span style="font-weight: 600;">Total you pay</span>
+                        <span style="font-weight: 600;">$255.75</span>
+                    </div>
+                </div>
+
+                <div style="background: #ecfdf5; border-radius: 12px; padding: 12px; margin-bottom: 24px; text-align: center;">
+                    <div style="font-size: 14px; color: #059669; font-weight: 600;">Great rate: Only 2.3% above market</div>
+                </div>
+
+                <button class="primary-btn" onclick="nextScreen()">Continue</button>
+            </div>
+        </div>
+
+        <!-- Screen 7: Enhanced Payment Method Selection -->
+        <div class="screen" id="screen7">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>🔋 100%</span>
+            </div>
+            <div class="header">
+                <button class="back-btn" onclick="prevScreen()">←</button>
+                <div class="header-title">Payment Method</div>
+                <button class="help-btn" onclick="openModal('payment-help')">?</button>
+            </div>
+            <div class="content">
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 8px;">How would you like to pay?</h2>
+                    <p style="color: #6c757d; font-size: 14px;">Choose the option that works best for you</p>
+                </div>
+
+                <div class="comparison-table">
+                    <div class="comparison-header">
+                        <div>Method</div>
+                        <div>Speed</div>
+                        <div>Fee</div>
+                        <div>Limit</div>
+                    </div>
+                    <div class="comparison-row">
+                        <div style="font-weight: 600;">💳 Card</div>
+                        <div style="color: #28a745;">Instant</div>
+                        <div>3.5%</div>
+                        <div>$2,500</div>
+                    </div>
+                    <div class="comparison-row">
+                        <div style="font-weight: 600;">🏦 Bank</div>
+                        <div style="color: #ffc107;">1-3 days</div>
+                        <div style="color: #28a745;">1.5%</div>
+                        <div>$10,000</div>
+                    </div>
+                    <div class="comparison-row">
+                        <div style="font-weight: 600;">📱 Apple Pay</div>
+                        <div style="color: #28a745;">Instant</div>
+                        <div>3.5%</div>
+                        <div>$1,000</div>
+                    </div>
+                </div>
+
+                <div class="payment-methods">
+                    <div class="payment-method selected recommended" onclick="selectPayment('card')">
+                        <div class="payment-icon" style="background: #667eea;">💳</div>
+                        <div class="payment-info">
+                            <h4>Credit/Debit Card</h4>
+                            <p>Instant • 3.5% fee • Most popular choice</p>
+                        </div>
+                    </div>
+                    <div class="payment-method" onclick="selectPayment('bank')">
+                        <div class="payment-icon" style="background: #28a745;">🏦</div>
+                        <div class="payment-info">
+                            <h4>Bank Transfer</h4>
+                            <p>1-3 days • Lower fees • Save money</p>
+                        </div>
+                    </div>
+                    <div class="payment-method" onclick="selectPayment('apple')">
+                        <div class="payment-icon" style="background: #000;">📱</div>
+                        <div class="payment-info">
+                            <h4>Apple Pay</h4>
+                            <p>Instant • 3.5% fee • Quick & secure</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: #fefce8; border-radius: 12px; padding: 16px; margin-bottom: 24px;">
+                    <div style="color: #92400e; font-size: 14px; line-height: 1.6; text-align: center;">
+                        Cards recommended: Instant • Easy • Protected
+                    </div>
+                </div>
+
+                <button class="primary-btn" onclick="processPaymentMethod()">Continue with Card</button>
+                
+                <!-- Error Recovery Section (Hidden by default) -->
+                <div class="error-recovery" id="payment-error" style="display: none;">
+                    <div class="error-title">
+                        <span style="margin-right: 8px;">⚠️</span>
+                        Payment method not available
+                    </div>
+                    <div class="error-solutions">
+                        <p><strong>Don't worry! This happens sometimes. Here's what you can try:</strong></p>
+                        <ul>
+                            <li>✅ Try a different card (some banks block crypto purchases initially)</li>
+                            <li>✅ Use Apple Pay instead (often works when cards don't)</li>
+                            <li>✅ Contact your bank to approve crypto purchases</li>
+                            <li>✅ Try bank transfer (takes longer but always works)</li>
+                        </ul>
+                        <div style="margin-top: 12px;">
+                            <button class="retry-btn" onclick="switchToApplePay()">Try Apple Pay Instead</button>
+                            <button class="retry-btn" onclick="switchToBankTransfer()" style="margin-left: 8px;">Use Bank Transfer</button>
+                        </div>
+                        <div style="margin-top: 12px;">
+                            <button style="background: none; border: none; color: #667eea; text-decoration: underline; font-size: 14px; cursor: pointer;" onclick="toggleAIChat()">
+                                🤖 Get help from AI assistant
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Message -->
+                <div style="background: #ecfdf5; border-radius: 12px; padding: 16px; margin-top: 16px; text-align: center;">
+                    <div style="font-weight: 600; color: #059669; margin-bottom: 4px;">🔒 Bank-level security</div>
+                    <div style="font-size: 14px; color: #047857;">Card info encrypted and never stored</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 8: Enhanced Card Details -->
+        <div class="screen" id="screen8">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>🔋 100%</span>
+            </div>
+            <div class="header">
+                <button class="back-btn" onclick="prevScreen()">←</button>
+                <div class="header-title">Payment Details</div>
+                <button class="help-btn" onclick="openModal('card-help')">?</button>
+            </div>
+            <div class="content">
+                <div style="background: #ecfdf5; border-radius: 12px; padding: 16px; margin-bottom: 24px; text-align: center;">
+                    <div style="font-weight: 600; color: #059669; margin-bottom: 4px;">🔒 Secure Payment</div>
+                    <div style="font-size: 14px; color: #047857;">Bank-level encryption</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Card Number
+                        <span class="tooltip-trigger">?
+                            <div class="tooltip">16-digit number on your card</div>
+                        </span>
+                    </label>
+                    <input type="text" class="form-input" placeholder="*******************" onchange="validateCard(this)">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Expiry Date</label>
+                        <input type="text" class="form-input" placeholder="MM/YY">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">CVV
+                            <span class="tooltip-trigger">?
+                                <div class="tooltip">3-digit code on back of card</div>
+                            </span>
+                        </label>
+                        <input type="text" class="form-input" placeholder="123">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Cardholder Name</label>
+                    <input type="text" class="form-input" placeholder="John Doe">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Billing Address
+                        <span class="tooltip-trigger">?
+                            <div class="tooltip">Address linked to your card</div>
+                        </span>
+                    </label>
+                    <input type="text" class="form-input" placeholder="123 Main St, City, State 12345">
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" class="checkbox" checked>
+                    <label>Save card for future purchases (optional)</label>
+                </div>
+
+                <div style="background: #f8f9fa; border-radius: 12px; padding: 16px; margin-bottom: 24px;">
+                    <div style="font-weight: 600; margin-bottom: 8px;">Order Summary:</div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                        <span>0.0047 BTC</span>
+                        <span style="font-weight: 600;">$255.75</span>
+                    </div>
+                    <div style="font-size: 12px; color: #6c757d;">Includes all fees • Instant delivery</div>
+                </div>
+
+                <button class="primary-btn" onclick="nextScreen()">Complete Purchase $255.75</button>
+                
+                <div style="text-align: center; margin-top: 16px;">
+                    <p style="font-size: 12px; color: #6c757d;">By continuing, you agree to our terms and conditions</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 9: Enhanced Processing with AI Support -->
+        <div class="screen" id="screen9">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>🔋 100%</span>
+            </div>
+            <div class="header">
+                <button class="back-btn" onclick="prevScreen()">←</button>
+                <div class="header-title">Processing Payment</div>
+                <button class="help-btn" onclick="openModal('processing-help')">?</button>
+            </div>
+            <div class="content">
+            <div class="processing-screen">
+                <!-- Enhanced Progress Ring -->
+                <svg class="progress-ring" viewBox="0 0 80 80">
+                    <circle class="progress-ring-circle" cx="40" cy="40" r="36"></circle>
+                    <circle class="progress-ring-progress" cx="40" cy="40" r="36" 
+                            stroke-dasharray="226" stroke-dashoffset="226" id="progress-circle"></circle>
+                    <text x="40" y="45" text-anchor="middle" font-size="12" font-weight="600" fill="#667eea" id="progress-text">30%</text>
+                </svg>
+                
+                <h2>Processing your purchase...</h2>
+                <p style="color: #6c757d; margin-top: 8px;">Hang tight! Great things are happening</p>
+
+                <!-- Real-time Time Estimate -->
+                <div class="time-estimate">
+                    <div style="font-weight: 600; color: #1976d2; margin-bottom: 4px;">⏱️ Estimated time remaining</div>
+                    <div style="font-size: 18px; font-weight: 700; color: #1976d2;" id="time-remaining">45 seconds</div>
+                    <div style="font-size: 12px; color: #1565c0; margin-top: 4px;">This is faster than most transactions!</div>
+                </div>
+
+                <div class="processing-steps">
+                    <div class="processing-step">
+                        <div class="step-icon completed">✓</div>
+                        <div>
+                            <div style="font-weight: 600;">Payment verified</div>
+                            <div style="font-size: 14px; color: #6c757d;">Your card payment was successful • 2s</div>
+                        </div>
+                    </div>
+                    <div class="processing-step">
+                        <div class="step-icon current">2</div>
+                        <div>
+                            <div style="font-weight: 600;">Purchasing Bitcoin</div>
+                            <div style="font-size: 14px; color: #6c757d;">Getting the best price for you... • 30s remaining</div>
+                        </div>
+                    </div>
+                    <div class="processing-step">
+                        <div class="step-icon pending">3</div>
+                        <div>
+                            <div style="font-weight: 600;">Delivering to wallet</div>
+                            <div style="font-size: 14px; color: #6c757d;">Almost there! • 15s remaining</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enhanced Anxiety Reducer -->
+                <div class="anxiety-reducer">
+                    <div style="font-weight: 600; color: #28a745; margin-bottom: 8px;">✅ Everything is normal</div>
+                    <div style="font-size: 14px; color: #155724;">Thousands of users complete this same transaction safely every day. Your funds are secure!</div>
+                </div>
+
+                <!-- Confidence Booster -->
+                <div class="confidence-booster">
+                    <div style="font-weight: 600; color: #28a745; margin-bottom: 8px;">🎉 You're doing amazing!</div>
+                    <div style="font-size: 14px; color: #155724;">This is an exciting moment - your first crypto purchase! You're joining millions of people in the future of finance.</div>
+                </div>
+
+                <!-- What's Happening Explanation -->
+                <div class="advanced-options">
+                    <div class="advanced-toggle" onclick="toggleAdvanced('processing-details')">
+                        🔍 What's happening behind the scenes?
+                    </div>
+                    <div class="advanced-content" id="processing-details">
+                        <div style="font-size: 14px; color: #6c757d; line-height: 1.5;">
+                            <p><strong>Step 1:</strong> Your payment was instantly verified by your bank</p>
+                            <p><strong>Step 2:</strong> We're purchasing Bitcoin at the best available market rate</p>
+                            <p><strong>Step 3:</strong> Your Bitcoin will be securely transferred to your wallet</p>
+                            <p style="margin-top: 12px; color: #28a745;"><strong>💡 Did you know?</strong> This process used to take hours or days. Now it's almost instant!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <p style="color: #6c757d; font-size: 14px; text-align: center; margin-top: 16px;">
+                    💡 Pro tip: You can safely minimize this window. We'll notify you when it's complete!
+                </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 10: Enhanced Success -->
+        <div class="screen" id="screen10">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>🔋 100%</span>
+            </div>
+            <div class="content">
+                <div style="text-align: center; padding: 20px 0;">
+                    <div class="success-icon celebration" style="margin: 0 auto 24px auto;">🎉</div>
+                    <h2 class="success-title">Congratulations! 🎊</h2>
+                    <p style="color: #6c757d; margin-bottom: 16px;">You've successfully bought your first Bitcoin!</p>
+                    <div style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; padding: 12px 24px; border-radius: 20px; display: inline-block; font-weight: 600; margin-bottom: 24px;">
+                        🏆 Achievement Unlocked: Crypto Owner!
+                    </div>
+                </div>
+
+                <div class="transaction-details">
+                    <div style="text-align: center; margin-bottom: 16px;">
+                        <div style="font-weight: 600; color: #1a1a1a;">Transaction Summary</div>
+                    </div>
+                    <div class="detail-row">
+                        <span>Amount purchased</span>
+                        <span>$250.00</span>
+                    </div>
+                    <div class="detail-row">
+                        <span>Service fee</span>
+                        <span>$2.50</span>
+                    </div>
+                    <div class="detail-row">
+                        <span>Network fee</span>
+                        <span>$3.25</span>
+                    </div>
+                    <div class="detail-row">
+                        <span style="font-weight: 600;">Total paid</span>
+                        <span style="font-weight: 600;">$255.75</span>
+                    </div>
+                    <div class="detail-row">
+                        <span style="font-weight: 600; color: #28a745;">Bitcoin received</span>
+                        <span style="font-weight: 600; color: #28a745;">0.0047 BTC</span>
+                    </div>
+                </div>
+
+                <div style="background: #f8f9fa; border-radius: 12px; padding: 16px; margin-bottom: 24px; text-align: center;">
+                    <p style="font-size: 14px; color: #6c757d;">Transaction ID</p>
+                    <p style="font-weight: 600; margin-top: 4px; font-family: monospace;">0x1234...5678</p>
+                    <button style="background: none; border: none; color: #667eea; font-size: 14px; cursor: pointer; margin-top: 8px; text-decoration: underline;">Copy ID</button>
+                </div>
+
+                <div style="background: #e8f5e8; border-radius: 12px; padding: 16px; margin-bottom: 24px; text-align: center;">
+                    <div style="font-weight: 600; color: #28a745; margin-bottom: 8px;">✅ Your Bitcoin is safe in your wallet</div>
+                    <div style="font-size: 14px; color: #155724;">It may take 5-10 minutes to appear, but it's already yours!</div>
+                </div>
+
+                <!-- AI-Powered Next Steps -->
+                <div style="background: linear-gradient(135deg, #e3f2fd 0%, #f0f4ff 100%); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                    <div style="font-weight: 600; color: #1976d2; margin-bottom: 12px;">🤖 AI Recommendations for you</div>
+                    <div style="color: #1565c0; font-size: 14px; line-height: 1.6;">
+                        <div style="margin-bottom: 8px;">✨ Perfect! Based on your first purchase, here's what I recommend:</div>
+                        <ul style="margin-left: 16px; padding-left: 0;">
+                            <li style="margin-bottom: 6px;">📊 Set up price alerts to track your Bitcoin</li>
+                            <li style="margin-bottom: 6px;">📅 Consider weekly purchases of $25-50 (dollar-cost averaging)</li>
+                            <li style="margin-bottom: 6px;">📚 Learn about Ethereum while you're ahead</li>
+                            <li>💬 Chat with me anytime for personalized advice!</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Enhanced What's Next -->
+                <div style="background: #fff3cd; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                    <div style="font-weight: 600; color: #856404; margin-bottom: 12px;">🎯 Your Crypto Journey Continues</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; color: #856404; font-size: 14px;">
+                        <div style="background: rgba(255,255,255,0.5); border-radius: 8px; padding: 12px;">
+                            <div style="font-weight: 600; margin-bottom: 4px;">📈 This Week</div>
+                            <div>Watch your investment grow</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.5); border-radius: 8px; padding: 12px;">
+                            <div style="font-weight: 600; margin-bottom: 4px;">📖 This Month</div>
+                            <div>Learn about other cryptos</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.5); border-radius: 8px; padding: 12px;">
+                            <div style="font-weight: 600; margin-bottom: 4px;">🔄 Long Term</div>
+                            <div>Set up auto-investing</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.5); border-radius: 8px; padding: 12px;">
+                            <div style="font-weight: 600; margin-bottom: 4px;">🚀 Advanced</div>
+                            <div>Explore DeFi features</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Confidence Booster Stats -->
+                <div style="background: #e8f5e8; border-radius: 12px; padding: 16px; margin-bottom: 24px; text-align: center;">
+                    <div style="font-weight: 600; color: #28a745; margin-bottom: 8px;">🎊 You're officially a crypto owner!</div>
+                    <div style="font-size: 14px; color: #155724; margin-bottom: 8px;">You just joined 400M+ people worldwide who own cryptocurrency</div>
+                    <div style="font-size: 12px; color: #155724;">Most first-time buyers add more within 30 days - you're in good company!</div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <button style="background: #f8f9fa; color: #667eea; border: 2px solid #667eea; border-radius: 12px; padding: 16px; font-weight: 600; font-size: 16px;" onclick="openModal('transaction-help')">
+                        View Details
+                    </button>
+                    <button style="width: 100%; background: #667eea; color: white; border: none; border-radius: 12px; padding: 16px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s;" onclick="goToScreen(5)">Continue</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 11: Import Existing Wallet -->
+        <div class="screen" id="screen11">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>🔋 100%</span>
+            </div>
+            <div class="header">
+                <button class="back-btn" onclick="goToScreen(2)">←</button>
+                <div class="header-title">Import Wallet</div>
+                <button class="help-btn" onclick="openModal('import-help')">?</button>
+            </div>
+            <div class="content">
+                <div style="text-align: center; margin-bottom: 32px;">
+                    <div style="width: 80px; height: 80px; background: #667eea; border-radius: 40px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: white; margin: 0 auto 16px;">📥</div>
+                    <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 12px;">Import Your Wallet</h2>
+                    <p style="color: #6c757d; line-height: 1.5;">Enter your 12-word recovery phrase to restore your wallet</p>
+                </div>
+
+                <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 12px; padding: 16px; margin-bottom: 24px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                        <span style="color: #856404; margin-right: 8px;">⚠️</span>
+                        <strong style="color: #856404;">Security Reminder</strong>
+                    </div>
+                    <p style="font-size: 14px; color: #856404;">Only enter your recovery phrase on trusted devices. Never share it with anyone.</p>
+                </div>
+
+                <div style="margin-bottom: 24px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <label style="font-size: 16px; font-weight: 600; color: #1a1a1a;">
+                            Recovery Phrase
+                            <span class="tooltip-trigger">?
+                                <div class="tooltip">Enter your 12 words separated by spaces</div>
+                            </span>
+                        </label>
+                        <button 
+                            style="background: #667eea; color: white; border: none; border-radius: 8px; padding: 8px 12px; font-size: 14px; font-weight: 600; cursor: pointer;" 
+                            onclick="pasteRecoveryPhrase()">
+                            📋 Paste
+                        </button>
+                    </div>
+                    <textarea 
+                        style="width: 100%; height: 120px; padding: 16px; border: 2px solid #e9ecef; border-radius: 12px; font-size: 16px; font-family: monospace; resize: none;" 
+                        placeholder="Enter your 12-word recovery phrase here..."
+                        id="recovery-phrase-input"
+                        onchange="validateRecoveryPhrase(this)"
+                        oninput="validateRecoveryPhrase(this)">
+                    </textarea>
+                    <div style="font-size: 12px; color: #6c757d; margin-top: 8px;">
+                        Example: ocean hidden escape brave sunset tunnel galaxy puzzle gentle forest wisdom castle
+                    </div>
+                </div>
+
+                <div style="background: #f8f9fa; border-radius: 12px; padding: 16px; margin-bottom: 24px;">
+                    <div style="font-weight: 600; margin-bottom: 12px; color: #1a1a1a;">✅ Import Checklist:</div>
+                    <div style="font-size: 14px; color: #6c757d; line-height: 1.6;">
+                        <div style="margin-bottom: 8px;">• Make sure you have all 12 words</div>
+                        <div style="margin-bottom: 8px;">• Check spelling and order carefully</div>
+                        <div style="margin-bottom: 8px;">• Use the exact phrase from your backup</div>
+                        <div>• Double-check before proceeding</div>
+                    </div>
+                </div>
+
+                <div style="background: #e8f5e8; border-radius: 12px; padding: 16px; margin-bottom: 24px; text-align: center;">
+                    <div style="font-weight: 600; color: #28a745; margin-bottom: 4px;">🔒 Your wallet will be restored</div>
+                    <div style="font-size: 14px; color: #155724;">All your crypto and transaction history will appear once imported</div>
+                </div>
+
+                <button class="primary-btn" onclick="processImport()" id="import-wallet-btn" disabled>
+                    Import Wallet
+                </button>
+
+                <div style="text-align: center; margin-top: 16px;">
+                    <button style="background: none; border: none; color: #667eea; text-decoration: underline; font-size: 14px; cursor: pointer;" onclick="goToScreen(2)">
+                        ← Go back to create new wallet instead
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 12: Import Existing Wallet (moved after setup tab) -->
+        <div class="screen" id="screen12">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span>🔋 100%</span>
+            </div>
+            <div class="header">
+                <button class="back-btn" onclick="goToScreen(2)">←</button>
+                <div class="header-title">Import Wallet</div>
+                <button class="help-btn" onclick="openModal('import-help')">?</button>
+            </div>
+            <div class="content">
+                <div style="text-align: center; margin-bottom: 32px;">
+                    <div style="width: 80px; height: 80px; background: #667eea; border-radius: 40px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: white; margin: 0 auto 16px;">📥</div>
+                    <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 12px;">Import Your Wallet</h2>
+                    <p style="color: #6c757d; line-height: 1.5;">Enter your 12-word recovery phrase to restore your wallet</p>
+                </div>
+
+                <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 12px; padding: 16px; margin-bottom: 24px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                        <span style="color: #856404; margin-right: 8px;">⚠️</span>
+                        <strong style="color: #856404;">Security Reminder</strong>
+                    </div>
+                    <p style="font-size: 14px; color: #856404;">Only enter your recovery phrase on trusted devices. Never share it with anyone.</p>
+                </div>
+
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #1a1a1a;">
+                        Recovery Phrase
+                        <span class="tooltip-trigger">?
+                            <div class="tooltip">Enter your 12 words separated by spaces</div>
+                        </span>
+                    </label>
+                    <div style="position: relative;">
+                        <textarea 
+                            style="width: 100%; height: 120px; padding: 16px; padding-bottom: 50px; border: 2px solid #e9ecef; border-radius: 12px; font-size: 16px; font-family: monospace; resize: none;" 
+                            placeholder="Enter your 12-word recovery phrase here..."
+                            id="recovery-phrase-input"
+                            onchange="validateRecoveryPhrase(this)"
+                            oninput="validateRecoveryPhrase(this)">
+                        </textarea>
+                        <button 
+                            style="position: absolute; bottom: 8px; right: 8px; background: #667eea; color: white; border: none; border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: 600; cursor: pointer;" 
+                            onclick="pasteRecoveryPhrase()">
+                            📋 Paste
+                        </button>
+                    </div>
+                    <div style="font-size: 12px; color: #6c757d; margin-top: 8px;">
+                        Example: ocean hidden escape brave sunset tunnel galaxy puzzle gentle forest wisdom castle
+                    </div>
+                </div>
+
+                <div style="background: #f8f9fa; border-radius: 12px; padding: 16px; margin-bottom: 24px;">
+                    <div style="font-weight: 600; margin-bottom: 12px; color: #1a1a1a;">✅ Import Checklist:</div>
+                    <div style="font-size: 14px; color: #6c757d; line-height: 1.6;">
+                        <div style="margin-bottom: 8px;">• Make sure you have all 12 words</div>
+                        <div style="margin-bottom: 8px;">• Check spelling and order carefully</div>
+                        <div style="margin-bottom: 8px;">• Use the exact phrase from your backup</div>
+                        <div>• Double-check before proceeding</div>
+                    </div>
+                </div>
+
+                <div style="background: #e8f5e8; border-radius: 12px; padding: 16px; margin-bottom: 24px; text-align: center;">
+                    <div style="font-weight: 600; color: #28a745; margin-bottom: 4px;">🔒 Your wallet will be restored</div>
+                    <div style="font-size: 14px; color: #155724;">All your crypto and transaction history will appear once imported</div>
+                </div>
+
+                <button class="primary-btn" onclick="processImport()" id="import-wallet-btn" disabled>
+                    Import Wallet
+                </button>
+
+                <div style="text-align: center; margin-top: 16px;">
+                    <button style="background: none; border: none; color: #667eea; text-decoration: underline; font-size: 14px; cursor: pointer;" onclick="goToScreen(2)">
+                        ← Go back to create new wallet instead
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal System -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal" id="modal-content">
+            <!-- Dynamic modal content will be inserted here -->
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn active" onclick="goToScreen(1)">Welcome</button>
+        <button class="nav-btn" onclick="goToScreen(2)">Wallet</button>
+        <button class="nav-btn" onclick="goToScreen(3)">Secure</button>
+        <button class="nav-btn" onclick="goToScreen(4)">Setup</button>
+        <button class="nav-btn" onclick="goToScreen(5)">Dashboard</button>
+        <button class="nav-btn" onclick="goToScreen(6)">Buy</button>
+        <button class="nav-btn" onclick="goToScreen(7)">Payment</button>
+        <button class="nav-btn" onclick="goToScreen(8)">Card</button>
+        <button class="nav-btn" onclick="goToScreen(9)">Process</button>
+        <button class="nav-btn" onclick="goToScreen(10)">Success</button>
+        <button class="nav-btn" onclick="goToScreen(12)">Import</button>
+    </div>
+
+    <script>
+        let currentScreen = 1;
+        const totalScreens = 12; // Updated to include import screen as 12
+        let selectedWalletType = 'smart';
+        let selectedCurrency = 'btc';
+        let selectedAmount = 250;
+        let selectedPayment = 'card';
+
+        // Enhanced Modal content definitions with AI integration
+        const modalContent = {
+            'welcome-help': {
+                title: 'What is a crypto wallet?',
+                content: 'A crypto wallet is like a digital bank account for cryptocurrencies. It allows you to store, send, and receive digital currencies like Bitcoin and Ethereum. Unlike traditional bank accounts, you have complete control over your funds - no bank or third party can freeze or access your money without your permission.<br><br><strong>🤖 Want to learn more?</strong> Our AI assistant can answer any specific questions you have! Just click the AI button and ask anything.',
+                showAI: true
+            },
+            'wallet-help': {
+                title: 'Your Crypto Wallet',
+                content: 'A crypto wallet gives you complete control over your digital currencies. With your own wallet, you hold the private keys - meaning you truly own your crypto. Create a new wallet to start fresh, or import an existing one if you already have a recovery phrase from another wallet.'
+            },
+            'security-help': {
+                title: 'Why is backup important?',
+                content: 'Your recovery phrase is the master key to your wallet. If you lose your phone or forget your password, this phrase is the ONLY way to recover your funds. Write it down on paper and store it safely - never save it digitally or share it with anyone. Think of it like the combination to a safe containing all your money.'
+            },
+            'dashboard-help': {
+                title: 'Understanding your progress',
+                content: 'This checklist helps you get started safely in crypto. Each step builds on the previous one to ensure you understand the basics before moving to advanced features. Completing all steps unlocks special badges and ensures you\'re ready to use crypto confidently!'
+            },
+            'buy-help': {
+                title: 'Buying your first crypto',
+                content: 'Start small! Even $10-20 is perfect for learning. Bitcoin (BTC) is the most popular and widely accepted cryptocurrency. Ethereum (ETH) powers smart contracts and many apps. USDC is a stablecoin that maintains a value close to $1 USD - perfect if you want stability.'
+            },
+            'payment-help': {
+                title: 'Payment method guide',
+                content: 'Credit/debit cards are fastest and most convenient for beginners - you get crypto instantly. Bank transfers take longer but have lower fees. Apple/Google Pay work like cards but with added convenience. We recommend cards for your first purchase due to instant delivery and buyer protection.'
+            },
+            'card-help': {
+                title: 'Your card security',
+                content: 'We use bank-level encryption to protect your payment information. Your card details are processed by certified payment processors and never stored on our servers. This is the same security used by major online retailers and banks.'
+            },
+            'transaction-help': {
+                title: 'Transaction completed',
+                content: 'Your Bitcoin is now safely stored in your wallet! The transaction ID is a unique identifier you can use to track your purchase on the blockchain. Your crypto may take a few minutes to appear due to network confirmation times, but ownership transferred immediately upon payment.'
+            },
+            'processing-help': {
+                title: 'What\'s happening now?',
+                content: 'Your transaction is being processed in real-time. We\'ve verified your payment and are now purchasing Bitcoin at the best available market rate. This typically takes 30-60 seconds. Your funds are completely safe during this process - we use the same security standards as major banks and financial institutions.'
+            },
+            'import-help': {
+                title: 'Importing Your Wallet',
+                content: 'To import an existing wallet, you need the 12-word recovery phrase you wrote down when you first created it. This phrase is like a master key that gives you access to your crypto. Enter the words exactly as they appear in your backup, separated by spaces. You can also use the Paste button for convenience.'
+            }
+        };
+
+        function showScreen(screenNumber) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Show target screen
+            document.getElementById(`screen${screenNumber}`).classList.add('active');
+            
+            // Update navigation
+            document.querySelectorAll('.nav-btn').forEach((btn, index) => {
+                btn.classList.toggle('active', index + 1 === screenNumber);
+            });
+            
+            currentScreen = screenNumber;
+
+            // Auto-advance from processing screen
+            if (screenNumber === 9) {
+                setTimeout(() => {
+                    updateProcessingStep(2);
+                    setTimeout(() => {
+                        updateProcessingStep(3);
+                        setTimeout(() => {
+                            nextScreen();
+                        }, 1500);
+                    }, 2000);
+                }, 2000);
+            }
+        }
+
+        function nextScreen() {
+            if (currentScreen < totalScreens) {
+                showScreen(currentScreen + 1);
+            }
+        }
+
+        function prevScreen() {
+            if (currentScreen > 1) {
+                showScreen(currentScreen - 1);
+            }
+        }
+
+        function goToScreen(screenNumber) {
+            showScreen(screenNumber);
+        }
+
+        function openModal(contentKey) {
+            const modal = modalContent[contentKey];
+            if (modal) {
+                const aiButton = modal.showAI ? `
+                    <button style="width: 100%; background: #667eea; color: white; border: none; border-radius: 12px; padding: 12px; font-weight: 600; cursor: pointer; margin-bottom: 8px;" onclick="closeModal(); toggleAIChat();">
+                        🤖 Chat with AI Assistant
+                    </button>
+                ` : '';
+                
+                document.getElementById('modal-content').innerHTML = `
+                    <div class="modal-title">${modal.title}</div>
+                    <div class="modal-content">${modal.content}</div>
+                    ${aiButton}
+                    <button class="modal-close" onclick="closeModal()">Got it! 👍</button>
+                `;
+                document.getElementById('modal-overlay').classList.add('active');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('active');
+        }
+
+        function selectWalletType(type) {
+            selectedWalletType = type;
+            if (type === 'smart') {
+                showCelebration();
+                setTimeout(() => nextScreen(), 1000);
+            } else {
+                nextScreen();
+            }
+        }
+
+        function selectCurrency(currency) {
+            selectedCurrency = currency;
+            document.querySelectorAll('.currency-btn').forEach(btn => btn.classList.remove('selected'));
+            event.target.closest('.currency-btn').classList.add('selected');
+            updatePricing();
+        }
+
+        function selectAmount(amount) {
+            selectedAmount = amount;
+            document.querySelectorAll('.amount-btn').forEach(btn => btn.classList.remove('selected'));
+            event.target.classList.add('selected');
+            document.querySelector('.custom-amount').value = `$${amount}`;
+            updatePricing();
+        }
+
+        function updateAmount(value) {
+            const numValue = parseInt(value.replace('$', ''));
+            if (!isNaN(numValue)) {
+                selectedAmount = numValue;
+                updatePricing();
+            }
+        }
+
+        function selectPayment(method) {
+            selectedPayment = method;
+            document.querySelectorAll('.payment-method').forEach(btn => btn.classList.remove('selected'));
+            event.target.closest('.payment-method').classList.add('selected');
+        }
+
+        function updatePricing() {
+            // Simulate dynamic pricing updates
+            const serviceFee = selectedAmount * 0.01;
+            const networkFee = 3.25;
+            const total = selectedAmount + serviceFee + networkFee;
+            
+            // Update fee breakdown if on buy screen
+            if (currentScreen === 6) {
+                // Update the display
+                console.log(`Updated pricing: Amount: $${selectedAmount}, Total: $${total.toFixed(2)}`);
+            }
+        }
+
+        function updateProcessingStep(step) {
+            document.querySelectorAll('.step-icon').forEach((icon, index) => {
+                if (index + 1 < step) {
+                    icon.className = 'step-icon completed';
+                    icon.textContent = '✓';
+                } else if (index + 1 === step) {
+                    icon.className = 'step-icon current';
+                    icon.textContent = step;
+                } else {
+                    icon.className = 'step-icon pending';
+                    icon.textContent = index + 1;
+                }
+            });
+        }
+
+        function confirmBackup() {
+            const checkbox = document.getElementById('backup-confirm');
+            if (checkbox.checked) {
+                showCelebration();
+                setTimeout(() => nextScreen(), 1000);
+            }
+        }
+
+        function showCelebration() {
+            // Add celebration animation
+            document.body.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
+            setTimeout(() => {
+                document.body.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            }, 1000);
+        }
+
+        function validateCard(input) {
+            // Simple card validation
+            const value = input.value.replace(/\s/g, '');
+            if (value.length >= 16) {
+                input.style.borderColor = '#28a745';
+            }
+        }
+
+        // Enable backup confirmation when checkbox is checked
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkbox = document.getElementById('backup-confirm');
+            const button = document.getElementById('confirm-backup-btn');
+            
+            if (checkbox && button) {
+                checkbox.addEventListener('change', function() {
+                    button.disabled = !this.checked;
+                    button.style.opacity = this.checked ? '1' : '0.6';
+                });
+            }
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('modal-overlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // AI Assistant Functions
+        let aiChatOpen = false;
+        let processingProgress = 0;
+        let processingTimer = null;
+
+        function toggleAIChat() {
+            const chat = document.getElementById('ai-chat');
+            const assistant = document.getElementById('ai-assistant');
+            
+            aiChatOpen = !aiChatOpen;
+            chat.classList.toggle('active', aiChatOpen);
+            assistant.classList.toggle('pulsing', !aiChatOpen);
+            
+            if (aiChatOpen) {
+                document.getElementById('ai-input').focus();
+            }
+        }
+
+        function handleAIInput(event) {
+            if (event.key === 'Enter') {
+                sendAIMessage();
+            }
+        }
+
+        function sendAIMessage() {
+            const input = document.getElementById('ai-input');
+            const messages = document.getElementById('ai-messages');
+            const userMessage = input.value.trim();
+            
+            if (!userMessage) return;
+            
+            // Add user message
+            const userDiv = document.createElement('div');
+            userDiv.style.cssText = 'background: #667eea; color: white; border-radius: 12px; padding: 8px 12px; margin-bottom: 8px; margin-left: 40px; font-size: 14px;';
+            userDiv.textContent = userMessage;
+            messages.appendChild(userDiv);
+            
+            // Clear input
+            input.value = '';
+            
+            // Add AI response
+            setTimeout(() => {
+                const aiResponse = getAIResponse(userMessage);
+                const aiDiv = document.createElement('div');
+                aiDiv.className = 'ai-message';
+                aiDiv.innerHTML = aiResponse;
+                messages.appendChild(aiDiv);
+                messages.scrollTop = messages.scrollHeight;
+            }, 1000);
+        }
+
+        function getAIResponse(message) {
+            const msg = message.toLowerCase();
+            
+            if (msg.includes('safe') || msg.includes('secure')) {
+                return '🔒 Your safety is our priority! We use bank-level encryption, and thousands of users transact safely every day. Your recovery phrase is your master key - keep it private and secure.';
+            } else if (msg.includes('buy') || msg.includes('purchase')) {
+                return '💰 Buying crypto is easy! Start with any amount you\'re comfortable with - even $10 works. Choose your currency, amount, and payment method. The whole process takes about 2 minutes!';
+            } else if (msg.includes('fees') || msg.includes('cost')) {
+                return '💳 Our fees are transparent: 1% service fee + network fees (usually $2-5). That\'s competitive with major exchanges. No hidden charges ever!';
+            } else if (msg.includes('time') || msg.includes('long')) {
+                return '⏱️ Most transactions complete in 30-60 seconds! Your payment is instant, and crypto delivery is usually under a minute. Much faster than traditional banking!';
+            } else if (msg.includes('help') || msg.includes('stuck')) {
+                return '🤝 I\'m here to help! You can also access our 24/7 support team, detailed guides, and step-by-step tutorials. What specific step are you having trouble with?';
+            } else if (msg.includes('first') || msg.includes('beginner')) {
+                return '🌟 Welcome to crypto! You\'re in good company - 95% of first-timers complete setup successfully. Take your time, ask questions, and remember: you can start with just $10 to learn!';
+            } else {
+                return '😊 Great question! I can help with wallet setup, buying crypto, security tips, or any concerns you have. Try asking something like "How do I buy my first Bitcoin?" or "Is this secure?"';
+            }
+        }
+
+        // Enhanced Processing Functions
+        function startProcessing() {
+            processingProgress = 0;
+            updateProgressRing(0);
+            updateTimeEstimate(60);
+            
+            processingTimer = setInterval(() => {
+                processingProgress += 2;
+                updateProgressRing(processingProgress);
+                updateTimeEstimate(Math.max(0, 60 - Math.floor(processingProgress * 0.6)));
+                
+                if (processingProgress >= 100) {
+                    clearInterval(processingTimer);
+                    setTimeout(() => nextScreen(), 1000);
+                }
+            }, 300);
+        }
+
+        function updateProgressRing(percentage) {
+            const circle = document.getElementById('progress-circle');
+            const text = document.getElementById('progress-text');
+            
+            if (circle && text) {
+                const circumference = 226;
+                const offset = circumference - (percentage / 100) * circumference;
+                circle.style.strokeDashoffset = offset;
+                text.textContent = Math.round(percentage) + '%';
+            }
+        }
+
+        function updateTimeEstimate(seconds) {
+            const timeElement = document.getElementById('time-remaining');
+            if (timeElement) {
+                timeElement.textContent = seconds + ' seconds';
+            }
+        }
+
+        // Error Recovery Functions
+        function processPaymentMethod() {
+            // Simulate payment method check
+            const random = Math.random();
+            
+            if (random < 0.3) { // 30% chance of error for demo
+                showPaymentError();
+            } else {
+                nextScreen();
+            }
+        }
+
+        function showPaymentError() {
+            const errorDiv = document.getElementById('payment-error');
+            if (errorDiv) {
+                errorDiv.style.display = 'block';
+                errorDiv.scrollIntoView({ behavior: 'smooth' });
+                
+                // Make AI assistant pulse to offer help
+                document.getElementById('ai-assistant').classList.add('pulsing');
+            }
+        }
+
+        function switchToApplePay() {
+            // Update selected payment method
+            document.querySelectorAll('.payment-method').forEach(method => {
+                method.classList.remove('selected');
+            });
+            
+            // Select Apple Pay
+            const applePayMethod = document.querySelector('.payment-method:nth-child(3)');
+            if (applePayMethod) {
+                applePayMethod.classList.add('selected');
+            }
+            
+            // Hide error and continue
+            document.getElementById('payment-error').style.display = 'none';
+            nextScreen();
+        }
+
+        function switchToBankTransfer() {
+            // Update selected payment method
+            document.querySelectorAll('.payment-method').forEach(method => {
+                method.classList.remove('selected');
+            });
+            
+            // Select Bank Transfer
+            const bankMethod = document.querySelector('.payment-method:nth-child(2)');
+            if (bankMethod) {
+                bankMethod.classList.add('selected');
+            }
+            
+            // Hide error and continue
+            document.getElementById('payment-error').style.display = 'none';
+            nextScreen();
+        }
+
+        // Progressive Disclosure Functions
+        function toggleAdvanced(contentId) {
+            const content = document.getElementById(contentId);
+            const toggle = content.previousElementSibling;
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                toggle.textContent = toggle.textContent.replace('🔽', '🔍');
+            } else {
+                content.classList.add('expanded');
+                toggle.textContent = toggle.textContent.replace('🔍', '🔽');
+            }
+        }
+
+        // Enhanced screen navigation with AI context
+        function showScreen(screenNumber) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Show target screen
+            document.getElementById(`screen${screenNumber}`).classList.add('active');
+            
+            // Update navigation
+            document.querySelectorAll('.nav-btn').forEach((btn, index) => {
+                btn.classList.toggle('active', index + 1 === screenNumber);
+            });
+            
+            currentScreen = screenNumber;
+
+            // Auto-advance from processing screen with enhanced feedback
+            if (screenNumber === 9) {
+                startProcessing();
+            }
+
+            // Update AI assistant context
+            updateAIContext(screenNumber);
+            
+            // Update annotations if active
+            updateScreenWithAnnotations(screenNumber);
+        }
+
+        function updateAIContext(screenNumber) {
+            const assistant = document.getElementById('ai-assistant');
+            const tooltip = document.getElementById('ai-tooltip');
+            
+            // Always keep gentle pulsing, but intensify on critical screens
+            assistant.classList.add('pulsing');
+            
+            // Add message indicator on screens where users commonly need help
+            if (screenNumber === 7 || screenNumber === 8 || screenNumber === 9) {
+                assistant.classList.add('has-message');
+            } else {
+                assistant.classList.remove('has-message');
+            }
+
+            // Update tooltip based on screen
+            updateTooltipMessage(screenNumber);
+
+            // Show tooltip briefly on first visit and critical screens
+            if (screenNumber === 1 || screenNumber === 6 || screenNumber === 7 || screenNumber === 9) {
+                showTooltipBriefly();
+            }
+        }
+
+        function updateTooltipMessage(screenNumber) {
+            const tooltip = document.getElementById('ai-tooltip');
+            const messages = {
+                1: "New to crypto? Ask me! 👋",
+                2: "Need wallet help? 🔒",
+                3: "Security questions? 🛡️",
+                6: "Buying crypto help? 💰",
+                7: "Payment issues? 💳",
+                8: "Card problems? 🆘",
+                9: "Feeling anxious? I'm here! 😌",
+                10: "Congrats! What's next? 🎉"
+            };
+            
+            tooltip.textContent = messages[screenNumber] || "Need help? Just ask! 🤖";
+        }
+
+        function showTooltipBriefly() {
+            const tooltip = document.getElementById('ai-tooltip');
+            tooltip.classList.add('show');
+            
+            setTimeout(() => {
+                tooltip.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize tooltip on first load
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                showTooltipBriefly();
+            }, 2000);
+        });
+
+        // ===============================
+        // SIMPLE ANNOTATION SYSTEM
+        // ===============================
+        
+        var annotationsActive = false;
+
+        window.toggleAnnotations = function() {
+            console.log('Toggle clicked');
+            
+            annotationsActive = !annotationsActive;
+            const toggle = document.getElementById('annotation-toggle');
+            
+            if (annotationsActive) {
+                toggle.textContent = '🔍 Hide UX Design Rationale';
+                toggle.classList.add('active');
+                showSimpleDemo();
+            } else {
+                toggle.textContent = '📚 Show UX Design Rationale';
+                toggle.classList.remove('active');
+                hideDemo();
+            }
+        }
+
+        window.showSimpleDemo = function() {
+            const floating = document.getElementById('annotation-floating');
+            const content = document.getElementById('floating-content');
+            
+                         content.innerHTML = `
+                 <div style="text-align: center; margin-bottom: 16px;">
+                     <h3 style="margin: 0 0 8px 0; color: #667eea;">🎯 UX Design Rationale</h3>
+                     <div style="background: rgba(102, 126, 234, 0.1); padding: 8px 12px; border-radius: 8px; font-weight: 600; color: #667eea;">
+                         ${getScreenName()}
+                     </div>
+                 </div>
+                 <div>
+                     ${getScreenInsights()}
+                 </div>
+                 <div style="text-align: center; margin-top: 16px; font-size: 12px; color: #6c757d; font-style: italic;">
+                     Navigate to see more insights
+                 </div>
+             `;
+            
+            floating.classList.add('show');
+            
+            // Show counter
+            const counter = document.getElementById('annotation-counter');
+            counter.textContent = `Screen: ${getScreenName()}`;
+            counter.classList.add('show');
+        }
+
+        window.hideDemo = function() {
+            const floating = document.getElementById('annotation-floating');
+            const counter = document.getElementById('annotation-counter');
+            
+            floating.classList.remove('show');
+            counter.classList.remove('show');
+        }
+
+        window.getScreenName = function() {
+            const screenNames = {
+                1: 'Welcome',
+                2: 'Wallet Setup', 
+                3: 'Security',
+                4: 'Dashboard Setup',
+                5: 'Wallet Dashboard',
+                6: 'Buy Crypto',
+                7: 'Payment Method',
+                8: 'Card Details',
+                9: 'Processing',
+                10: 'Success',
+                12: 'Import Wallet'
+            };
+            return screenNames[currentScreen] || `Screen ${currentScreen}`;
+        }
+
+        window.getScreenInsights = function() {
+            const insights = {
+                                 1: `
+                     <div style="background: #f0f4ff; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                         <div style="font-weight: 700; color: #667eea; margin-bottom: 8px;">🎯 First Impression & Trust Building</div>
+                     </div>
+                     
+                     <div style="background: #667eea; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">🚀 Hero Icon Psychology</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • Rocket creates excitement vs fear mindset<br>
+                             • Positions crypto as opportunity, not threat<br>
+                             • Instant emotional shift from anxiety to anticipation
+                         </div>
+                     </div>
+                     
+                     <div style="background: #28a745; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">📊 Progress Visualization</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • 4-step process shows manageable commitment<br>
+                             • Reduces anxiety about endless procedures<br>
+                             • Defined progress beats unknown complexity
+                         </div>
+                     </div>
+                     
+                     <div style="background: #ff6b35; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">🌟 Social Proof Strategy</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • "10M+ users" eliminates fear of being first<br>
+                             • "95% success rate" provides mathematical confidence<br>
+                             • Numbers build trust faster than testimonials
+                         </div>
+                     </div>
+                     
+                     <div style="background: #667eea; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">🤔 Beginner-Friendly Messaging</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • "No technical knowledge needed" removes intimidation<br>
+                             • "Start with any amount" lowers financial barrier<br>
+                             • Direct addressing of common fears
+                         </div>
+                     </div>
+                     
+                     <div style="background: #e8f5e8; padding: 10px; border-radius: 6px; border-left: 3px solid #28a745;">
+                         <div style="font-weight: 600; color: #155724; font-size: 13px;">🎯 Result: Converts crypto-curious into confident first-time users through trust-building and fear reduction</div>
+                     </div>
+                 `,
+                                 2: `
+                     <div style="background: #f0f4ff; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                         <div style="font-weight: 700; color: #667eea; margin-bottom: 8px;">🎓 Building User Confidence</div>
+                     </div>
+                     
+                     <div style="background: #667eea; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">✨ "What You Get" Grid</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • Clear benefits reduce crypto anxiety<br>
+                             • Visual hierarchy makes complex concepts digestible<br>
+                             • Builds anticipation instead of overwhelming
+                         </div>
+                     </div>
+                     
+                     <div style="background: #28a745; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">🛡️ Security Transparency</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • Prepares users for recovery phrase requirement<br>
+                             • Sets proper security expectations early<br>
+                             • Transparency builds trust vs surprises
+                         </div>
+                     </div>
+                     
+                     <div style="background: #ff6b35; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">🤔 Decision Support</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • "New to crypto?" acknowledges uncertainty without judgment<br>
+                             • Smart vs Standard choice reduces decision paralysis<br>
+                             • Guided path for different user types
+                         </div>
+                     </div>
+                     
+                     <div style="background: #e8f5e8; padding: 10px; border-radius: 6px; border-left: 3px solid #28a745;">
+                         <div style="font-weight: 600; color: #155724; font-size: 13px;">🎯 Result: Transforms intimidating wallet choice into confident decision through education and transparency</div>
+                     </div>
+                 `,
+                                 3: `
+                     <div style="background: #f0f4ff; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                         <div style="font-weight: 700; color: #667eea; margin-bottom: 8px;">🔐 Security-First UX Design</div>
+                     </div>
+                     
+                     <div style="background: #667eea; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">👁️ "Tap to Reveal" Pattern</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • Industry standard prevents shoulder surfing<br>
+                             • Forces intentional interaction with sensitive data<br>
+                             • Builds security awareness through interaction
+                         </div>
+                     </div>
+                     
+                     <div style="background: #28a745; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">🔐 Just-in-Time Education</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • Security tips appear when needed, not upfront<br>
+                             • 400% more effective than tutorials<br>
+                             • Contextual learning reduces cognitive load
+                         </div>
+                     </div>
+                     
+                     <div style="background: #ff6b35; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">✅ Commitment Psychology</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • Checkbox creates psychological commitment<br>
+                             • Users 3x more likely to complete after checking<br>
+                             • Mobile-optimized interaction design
+                         </div>
+                     </div>
+                     
+                     <div style="background: #e8f5e8; padding: 10px; border-radius: 6px; border-left: 3px solid #28a745;">
+                         <div style="font-weight: 600; color: #155724; font-size: 13px;">🎯 Result: Maximum security achieved with minimal user friction through progressive education</div>
+                     </div>
+                 `,
+                 4: `
+                     <div style="background: #f0f4ff; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                         <div style="font-weight: 700; color: #667eea; margin-bottom: 8px;">🎮 Gamification & Momentum Building</div>
+                     </div>
+                     
+                     <div style="background: #667eea; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">📊 Progress Gamification</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • "3/6" badge leverages completion bias psychology<br>
+                             • Humans hate leaving tasks unfinished<br>
+                             • Creates urgency to complete remaining steps
+                         </div>
+                     </div>
+                     
+                     <div style="background: #28a745; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">🏆 Achievement Psychology</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • "Wallet Creator" & "Security Expert" badges trigger dopamine<br>
+                             • Creates pride and status feelings<br>
+                             • Positive reinforcement for security behavior
+                         </div>
+                     </div>
+                     
+                     <div style="background: #ff6b35; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">💰 Revenue-Driving Strategy</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • Primary CTA drives to revenue action (Buy Crypto)<br>
+                             • Most users create wallets but never purchase<br>
+                             • Prevents critical drop-off at setup completion
+                         </div>
+                     </div>
+                     
+                     <div style="background: #e8f5e8; padding: 10px; border-radius: 6px; border-left: 3px solid #28a745;">
+                         <div style="font-weight: 600; color: #155724; font-size: 13px;">🎯 Result: Converts wallet creators into active buyers through gamification and strategic CTAs</div>
+                     </div>
+                 `,
+                 5: `
+                     <div style="background: #f0f4ff; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                         <div style="font-weight: 700; color: #667eea; margin-bottom: 8px;">💼 Value-Driven Dashboard</div>
+                     </div>
+                     
+                     <div style="background: #667eea; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">💰 Hero Balance Display</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • $2,847 proves crypto has real monetary value<br>
+                             • Builds ownership pride and attachment<br>
+                             • Shows immediate tangible results
+                         </div>
+                     </div>
+                     
+                     <div style="background: #28a745; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">🚀 Strategic Buy Button</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • Prime placement in natural eye flow after balance<br>
+                             • Revenue-generating action prominently featured<br>
+                             • Capitalizes on portfolio viewing momentum
+                         </div>
+                     </div>
+                     
+                     <div style="background: #ff6b35; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">📈 Performance Psychology</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • Green +10% creates positive momentum feeling<br>
+                             • Makes users feel like successful investors<br>
+                             • Psychological win encourages additional investment
+                         </div>
+                     </div>
+                     
+                     <div style="background: #e8f5e8; padding: 10px; border-radius: 6px; border-left: 3px solid #28a745;">
+                         <div style="font-weight: 600; color: #155724; font-size: 13px;">🎯 Result: Portfolio pride drives continued engagement and repeat purchases through success psychology</div>
+                     </div>
+                 `,
+                                 6: `
+                     <div style="background: #f0f4ff; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                         <div style="font-weight: 700; color: #667eea; margin-bottom: 8px;">🛒 First Purchase Optimization</div>
+                     </div>
+                     
+                     <div style="background: #667eea; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">🎯 Anxiety Reduction Strategy</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • "Start with any amount" removes financial fear<br>
+                             • Soft blue background creates calming effect<br>
+                             • Non-aggressive, supportive tone
+                         </div>
+                     </div>
+                     
+                     <div style="background: #28a745; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">🪙 Decision Simplification</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • 3 curated options vs 1000+ overwhelming choices<br>
+                             • Prevents choice paralysis through constraint<br>
+                             • Educational labels build crypto knowledge
+                         </div>
+                     </div>
+                     
+                     <div style="background: #ff6b35; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">💎 Radical Transparency</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • Complete fee breakdown shown upfront<br>
+                             • "2.3% above market" frames cost positively<br>
+                             • Builds trust vs hidden charges model
+                         </div>
+                     </div>
+                     
+                     <div style="background: #e8f5e8; padding: 10px; border-radius: 6px; border-left: 3px solid #28a745;">
+                         <div style="font-weight: 600; color: #155724; font-size: 13px;">🎯 Result: Converts hesitant browsers into confident first-time buyers through anxiety reduction and transparency</div>
+                     </div>
+                 `,
+                                 7: `
+                     <div style="background: #f0f4ff; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                         <div style="font-weight: 700; color: #667eea; margin-bottom: 8px;">💳 Payment Method Strategy</div>
+                     </div>
+                     
+                     <div style="background: #667eea; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">📊 Decision Framework</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • Clear speed vs cost tradeoffs shown transparently<br>
+                             • Comparison table eliminates payment confusion<br>
+                             • Empowers informed decision-making vs guessing
+                         </div>
+                     </div>
+                     
+                     <div style="background: #28a745; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">🏅 Nudging Psychology</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • "Recommended" badge guides optimal choice<br>
+                             • Pre-selection leverages social proof psychology<br>
+                             • Yellow highlight creates visual hierarchy
+                         </div>
+                     </div>
+                     
+                     <div style="background: #ff6b35; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">🚨 Error Recovery Design</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • Immediate alternatives prevent payment abandonment<br>
+                             • AI assistant provides emotional support during stress<br>
+                             • Multiple backup options reduce failure points
+                         </div>
+                     </div>
+                     
+                     <div style="background: #e8f5e8; padding: 10px; border-radius: 6px; border-left: 3px solid #28a745;">
+                         <div style="font-weight: 600; color: #155724; font-size: 13px;">🎯 Result: Overcomes payment barriers through transparency, guidance, and robust error recovery</div>
+                     </div>
+                 `,
+                                 8: `
+                     <div style="background: #f0f4ff; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                         <div style="font-weight: 700; color: #667eea; margin-bottom: 8px;">💳 Trust & Conversion Optimization</div>
+                     </div>
+                     
+                     <div style="background: #667eea; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">🛡️ Security-First Messaging</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • Addresses top user concern immediately<br>
+                             • "Bank-level encryption" uses familiar, trusted language<br>
+                             • Green security badge creates protective feeling
+                         </div>
+                     </div>
+                     
+                     <div style="background: #28a745; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">❓ Progressive Help System</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • Tooltips on complex fields (CVV, billing) reduce confusion<br>
+                             • Help available without cluttering interface<br>
+                             • Just-in-time support when needed most
+                         </div>
+                     </div>
+                     
+                     <div style="background: #ff6b35; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">💳 Clear Value Proposition</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • Button shows exact commitment amount ($255.75)<br>
+                             • Final summary confirms total before purchase<br>
+                             • Zero surprise charges or hidden fees
+                         </div>
+                     </div>
+                     
+                     <div style="background: #e8f5e8; padding: 10px; border-radius: 6px; border-left: 3px solid #28a745;">
+                         <div style="font-weight: 600; color: #155724; font-size: 13px;">🎯 Result: Maximum trust established at critical moment of financial commitment</div>
+                     </div>
+                 `,
+                                 9: `
+                     <div style="background: #f0f4ff; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                         <div style="font-weight: 700; color: #667eea; margin-bottom: 8px;">⏱️ Anxiety Management During Processing</div>
+                     </div>
+                     
+                     <div style="background: #667eea; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">⏳ Real-Time Progress Feedback</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • Animated ring + countdown eliminates uncertainty<br>
+                             • Visual proof prevents "is it broken?" anxiety<br>
+                             • Predictable timeline manages expectations
+                         </div>
+                     </div>
+                     
+                     <div style="background: #28a745; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">😌 Anxiety Relief Messaging</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • "Everything is normal" directly addresses fears<br>
+                             • "Thousands complete daily" provides social proof<br>
+                             • Builds confidence during vulnerable moment
+                         </div>
+                     </div>
+                     
+                     <div style="background: #ff6b35; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">🎉 Emotional Support & Celebration</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • "You're doing amazing!" provides encouragement<br>
+                             • Reframes wait as exciting milestone achievement<br>
+                             • Step-by-step transparency builds trust
+                         </div>
+                     </div>
+                     
+                     <div style="background: #e8f5e8; padding: 10px; border-radius: 6px; border-left: 3px solid #28a745;">
+                         <div style="font-weight: 600; color: #155724; font-size: 13px;">🎯 Result: Transforms stressful payment wait into confident anticipation through clear communication</div>
+                     </div>
+                 `,
+                                 10: `
+                     <div style="background: #f0f4ff; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                         <div style="font-weight: 700; color: #667eea; margin-bottom: 8px;">🏆 Achievement & Celebration Psychology</div>
+                     </div>
+                     
+                     <div style="background: #667eea; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">🎯 Crypto Owner Achievement</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • Gamification dopamine hit creates addictive reinforcement<br>
+                             • Identity transformation: "curious" to "crypto owner"<br>
+                             • "Joined 400M+ people" creates belonging
+                         </div>
+                     </div>
+                     
+                     <div style="background: #28a745; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">🎉 Multiple Celebration Moments</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • Visual celebration + status badge + milestone recognition<br>
+                             • "First Bitcoin" emphasizes significance<br>
+                             • Creates positive reinforcement pattern
+                         </div>
+                     </div>
+                     
+                     <div style="background: #ff6b35; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">🤖 AI-Powered Retention Strategy</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • Personalized guidance feels custom vs generic marketing<br>
+                             • "Weekly purchases" creates recurring revenue<br>
+                             • Educational pathway expands product use
+                         </div>
+                     </div>
+                     
+                     <div style="background: #667eea; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">🗺️ Journey Mapping - "What's Next"</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • Time-based progression reduces post-purchase regret<br>
+                             • This Week → This Month → Long Term → Advanced<br>
+                             • Shows this isn't just spending, it's journey beginning
+                         </div>
+                     </div>
+                     
+                     <div style="background: #28a745; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">👥 Social Proof & Confidence Building</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • "Most buyers add more within 30 days" normalizes future purchases<br>
+                             • FOMO creation + peer pressure drives follow-along behavior<br>
+                             • Reduces buyer's remorse through social validation
+                         </div>
+                     </div>
+                     
+                     <div style="background: #e8f5e8; padding: 10px; border-radius: 6px; border-left: 3px solid #28a745;">
+                         <div style="font-weight: 600; color: #155724; font-size: 13px;">🎯 Result: Transforms one-time buyers into long-term customers. Likely increases 30-day purchase rates by 50%+</div>
+                     </div>
+                 `,
+                 12: `
+                     <div style="background: #f0f4ff; padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                         <div style="font-weight: 700; color: #667eea; margin-bottom: 8px;">🔄 Wallet Recovery UX</div>
+                     </div>
+                     
+                     <div style="background: #667eea; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">⚠️ Security-First Warning</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • Yellow warning creates appropriate caution level<br>
+                             • Builds security awareness for sensitive phrase handling<br>
+                             • Educates without creating panic or fear
+                         </div>
+                     </div>
+                     
+                     <div style="background: #28a745; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">📋 Friction Reduction</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • Paste button eliminates mobile typing frustration<br>
+                             • Corner placement: accessible but not accidental<br>
+                             • Significantly speeds up recovery process
+                         </div>
+                     </div>
+                     
+                     <div style="background: #ff6b35; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                         <div style="font-weight: 600; color: white; margin-bottom: 6px;">✅ Error Prevention Design</div>
+                         <div style="font-size: 12px; color: rgba(255,255,255,0.9); line-height: 1.3;">
+                             • Checklist prevents common user failures<br>
+                             • Smart validation (12-word requirement) catches errors<br>
+                             • Proactive guidance reduces support burden
+                         </div>
+                     </div>
+                     
+                     <div style="background: #e8f5e8; padding: 10px; border-radius: 6px; border-left: 3px solid #28a745;">
+                         <div style="font-weight: 600; color: #155724; font-size: 13px;">🎯 Result: Secure, fast wallet recovery achieved with minimal user errors and maximum confidence</div>
+                     </div>
+                 `
+             };
+            return insights[currentScreen] || '<li>🔍 Navigate to see UX insights for this screen</li>';
+        }
+
+        // Update screen changes to refresh insights
+        window.updateScreenWithAnnotations = function(screenNumber) {
+            if (annotationsActive) {
+                setTimeout(() => {
+                    showSimpleDemo();
+                }, 300);
+            }
+        }
+
+        function createNewWallet() {
+            selectedWalletType = 'new';
+            showCelebration();
+            setTimeout(() => nextScreen(), 1000); // Goes to Screen 3 (Secure tab)
+        }
+
+        function importExistingWallet() {
+            selectedWalletType = 'import';
+            goToScreen(12); // Goes to new Screen 12 (Import tab after setup)
+        }
+
+        function validateRecoveryPhrase(input) {
+            const phrase = input.value.trim();
+            const words = phrase.split(/\s+/).filter(word => word.length > 0);
+            const button = document.getElementById('import-wallet-btn');
+            
+            // Simple validation: check if we have 12 words
+            if (words.length === 12 && phrase.length > 0) {
+                button.disabled = false;
+                button.style.opacity = '1';
+                input.style.borderColor = '#28a745';
+            } else {
+                button.disabled = true;
+                button.style.opacity = '0.6';
+                input.style.borderColor = '#e9ecef';
+            }
+        }
+
+        function processImport() {
+            // Show success animation
+            showCelebration();
+            
+            // Simulate import process
+            setTimeout(() => {
+                // Skip to dashboard (Screen 5) since wallet is already set up
+                goToScreen(5);
+            }, 1500);
+        }
+
+        // Add these functions to your existing JavaScript section
+
+        async function pasteRecoveryPhrase() {
+            try {
+                const text = await navigator.clipboard.readText();
+                const input = document.getElementById('recovery-phrase-input');
+                input.value = text.trim();
+                validateRecoveryPhrase(input);
+                
+                // Show feedback
+                const pasteBtn = event.target;
+                const originalText = pasteBtn.textContent;
+                pasteBtn.textContent = '✅ Pasted';
+                pasteBtn.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    pasteBtn.textContent = originalText;
+                    pasteBtn.style.background = '#667eea';
+                }, 2000);
+                
+            } catch (err) {
+                // Fallback if clipboard API not available
+                alert('Please manually paste your recovery phrase into the text area');
+            }
+        }
+
+        // Add these functions to your existing JavaScript
+
+        function revealPhrase() {
+            const overlay = document.getElementById('phrase-overlay');
+            const content = document.getElementById('phrase-content');
+            
+            // Hide overlay with animation
+            overlay.classList.add('phrase-hidden');
+            
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                content.style.display = 'block';
+                content.classList.add('phrase-revealed');
+                
+                // Auto-hide after 30 seconds for security
+                setTimeout(() => {
+                    hidePhrase();
+                }, 30000);
+                
+            }, 300);
+        }
+
+        function hidePhrase() {
+            const overlay = document.getElementById('phrase-overlay');
+            const content = document.getElementById('phrase-content');
+            
+            if (content.style.display !== 'none') {
+                content.classList.add('phrase-hidden');
+                
+                setTimeout(() => {
+                    content.style.display = 'none';
+                    content.classList.remove('phrase-revealed', 'phrase-hidden');
+                    overlay.style.display = 'block';
+                    overlay.classList.remove('phrase-hidden');
+                }, 300);
+            }
+        }
+
+        // Enable backup confirmation when checkbox is checked
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkbox = document.getElementById('backup-confirm');
+            const button = document.getElementById('confirm-backup-btn');
+            
+            if (checkbox && button) {
+                checkbox.addEventListener('change', function() {
+                    button.disabled = !this.checked;
+                    button.style.opacity = this.checked ? '1' : '0.6';
+                });
+            }
+        });
+
+        function confirmBackup() {
+            const checkbox = document.getElementById('backup-confirm');
+            if (checkbox.checked) {
+                showCelebration();
+                setTimeout(() => nextScreen(), 1000);
+            }
+        }
+
+        // Initialize the app
+        showScreen(1);
+    </script>
+</body>
+</html> 
